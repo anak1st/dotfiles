@@ -24,7 +24,8 @@
         },
         {
           "id": "focusedWindow",
-          "enabled": true
+          "enabled": true,
+          "focusedWindowSize": 1
         }
       ],
       "centerWidgets": [
@@ -78,10 +79,10 @@
       "widgetTransparency": 0.9,
       "squareCorners": false,
       "noBackground": false,
-      "widgetStyle": "segments",
+      "widgetStyle": "pills",
       "maximizeWidgetIcons": false,
       "maximizeWidgetText": false,
-      "widgetPadding": 10,
+      "widgetPadding": 8,
       "batteryColorMode": "theme",
       "gothCornersEnabled": false,
       "gothCornerRadiusOverride": false,
@@ -124,7 +125,7 @@
       "hoverPopoutDelay": 150,
       "dot": false,
       "islandCompactThickness": 36,
-      "islandSatelliteGap": 16,
+      "islandSatelliteGap": 12,
       "islandAlongOffset": 0,
       "islandOuterGap": 0,
       "islandReserveThickness": 40,
@@ -137,11 +138,13 @@
       "islandPalette": "default",
       "islandHomeCompactTight": false,
       "islandSatellitesEnabled": true,
+      "islandSatellitePosition": "edges",
       "island": true,
-      "islandSatellitePosition": "edges"
+      "islandRouteLauncher": "follow",
+      "islandHomeClockDisplay": "both"
     }
   ],
-  "density": "spacious",
+  "density": "comfortable",
   "builtInPluginSettings": {
     "dms_qr_generator": {
       "trigger": "qrg"
@@ -170,5 +173,11 @@
   "niriLayoutGapsOverride": -1,
   "connectedFrameBarStyleBackups": {},
   "frameEnabled": false,
-  "interfaceStyle": "expressive"
+  "interfaceStyle": "expressive",
+  "radiusMode": "scale",
+  "fontWeight": 500,
+  "blurBorderEnabled": true,
+  "blurEnabled": false,
+  "blurBorderSeeded": true,
+  "radiusStrength": 50
 }
