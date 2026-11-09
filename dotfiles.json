@@ -4,38 +4,72 @@
     {
       "source": ".config/nvim",
       "target": ".config/nvim",
-      "os": [
-        "macos",
-        "linux"
-      ]
+      "os": ["macos", "linux"]
     },
     {
       "source": ".config/ghostty/config.ghostty",
       "target": ".config/ghostty/config.ghostty",
-      "os": [
-        "macos"
-      ]
+      "os": ["macos"]
+    },
+    {
+      "source": ".config/niri/config.kdl",
+      "target": ".config/niri/config.kdl",
+      "os": ["linux"]
+    },
+    {
+      "source": ".config/kitty/kitty.conf",
+      "target": ".config/kitty/kitty.conf",
+      "os": ["linux"]
+    },
+    {
+      "source": ".config/kitty/dank-theme.conf",
+      "target": ".config/kitty/dank-theme.conf",
+      "os": ["linux"]
+    },
+    {
+      "source": ".config/kitty/dank-tabs.conf",
+      "target": ".config/kitty/dank-tabs.conf",
+      "os": ["linux"]
+    },
+    {
+      "source": ".config/fcitx5/profile",
+      "target": ".config/fcitx5/profile",
+      "os": ["linux"]
+    },
+    {
+      "source": ".config/fcitx5/conf/chttrans.conf",
+      "target": ".config/fcitx5/conf/chttrans.conf",
+      "os": ["linux"]
+    },
+    {
+      "source": ".config/fcitx5/conf/pinyin.conf",
+      "target": ".config/fcitx5/conf/pinyin.conf",
+      "os": ["linux"]
+    },
+    {
+      "source": ".config/fcitx5/conf/punctuation.conf",
+      "target": ".config/fcitx5/conf/punctuation.conf",
+      "os": ["linux"]
+    },
+    {
+      "source": ".config/fcitx5/conf/notifications.conf",
+      "target": ".config/fcitx5/conf/notifications.conf",
+      "os": ["linux"]
     },
     {
       "source": ".config/fish/config.fish",
       "target": ".config/fish/config.fish",
-      "os": [
-        "linux"
-      ]
+      "os": ["linux"]
     },
     {
       "source": ".config/fish/conf.d/fnm.fish",
       "target": ".config/fish/conf.d/fnm.fish",
-      "os": [
-        "linux"
-      ]
+      "os": ["linux"]
     },
     {
       "source": ".config/fish/conf.d/opencode.fish",
       "target": ".config/fish/conf.d/opencode.fish",
-      "os": [
-        "linux"
-      ]
+      "os": ["linux"]
     }
   ]
 }
