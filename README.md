@@ -9,9 +9,12 @@ dotfiles/
 ├── dotfiles.json          # 清单：source → target，可限定 os
 ├── install.py             # 安装/更新：仓库 → $HOME
 ├── sync.py                # 同步/回收：$HOME → 仓库
+├── docs/                  # 每个软件一份说明（入口：docs/README.md）
 ├── .config/nvim/          # Neovim 配置（macOS / Linux 共用）
 └── .config/ghostty/       # Ghostty 配置（仅 macOS）
 ```
+
+各软件的配置归属、DMS 生成物边界、排错方式，见 [docs/README.md](./docs/README.md)。
 
 ## 用法
 
