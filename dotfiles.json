@@ -65,6 +65,11 @@
       "source": ".config/fcitx5/config",
       "target": ".config/fcitx5/config",
       "os": ["linux"]
+    },
+    {
+      "source": ".config/dms/settings.json",
+      "target": ".config/dms/settings.json",
+      "os": ["linux"]
     }
   ]
 }
