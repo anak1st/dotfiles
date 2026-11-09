@@ -1,0 +1,7 @@
+font-size = 15
+font-family = Maple Mono NF CN
+
+# 透明度与背景模糊
+background-opacity = 0.8
+background-blur = 20
+background-opacity-cells = true

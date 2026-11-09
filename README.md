@@ -6,10 +6,11 @@
 
 ```
 dotfiles/
-├── dotfiles.json        # 清单：source(仓库内) → target(相对 ~)，可限定 os
-├── install.py           # 安装/更新：仓库 → $HOME
-├── sync.py              # 同步/回收：$HOME → 仓库
-└── .config/nvim/        # 当前唯一一份配置，macOS / Linux 共用
+├── dotfiles.json          # 清单：source → target，可限定 os
+├── install.py             # 安装/更新：仓库 → $HOME
+├── sync.py                # 同步/回收：$HOME → 仓库
+├── .config/nvim/          # Neovim 配置（macOS / Linux 共用）
+└── .config/ghostty/       # Ghostty 配置（仅 macOS）
 ```
 
 ## 用法
@@ -31,30 +32,27 @@ python3 sync.py --prune        # 同时删掉仓库里本机已不存在的文�
 
 ## 新增一条 dotfile
 
-编辑 `dotfiles.json`，`source` 是仓库内路径，`target` 相对 `~`：
+编辑 `dotfiles.json`，`source` 是仓库内路径，`target` 相对 `~`，仓库路径直接镜像 home：
 
 ```json
-{
-  "source": ".config/nvim",
-  "target": ".config/nvim",
-  "os": ["macos", "linux"]
-}
+{ "source": ".config/ghostty/config.ghostty",
+  "target": ".config/ghostty/config.ghostty",
+  "os": ["macos"] }
 ```
 
 - 目录条目会展开成逐文件覆盖，适合整个目录都属于你的配置（比如 nvim）。
-- 想精确到单个文件，就一条列一个文件；`source` 也可以直接指向 `os/<平台>/...`。
+- 想精确到单个文件，就一条列一个文件。
 - `os` 省略时默认 `["macos", "linux"]`。
 
-## 平台专属文件
+## 平台差异
 
-约定放在 `os/<平台>/` 下，路径仍按 home 镜像：
+平台差异只写在条目的 `os` 字段里，不另建目录层。两个平台需要同一目标路径、
+但内容不同时，用不同的 source 文件名区分即可：
 
 ```json
-{ "source": "os/linux/.bashrc",     "target": ".bashrc",     "os": ["linux"] },
-{ "source": "os/macos/.tmux.conf",  "target": ".tmux.conf",  "os": ["macos"] }
+{ "source": ".config/ghostty/config.ghostty", "target": ".config/ghostty/config.ghostty", "os": ["macos"] },
+{ "source": ".config/ghostty/config.linux",   "target": ".config/ghostty/config.ghostty", "os": ["linux"] }
 ```
-
-同一 target 在通用和平台专属里都出现时，后写的条目会覆盖前面的（按清单顺序）。
 
 ## 测试
 
