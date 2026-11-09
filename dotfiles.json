@@ -22,16 +22,6 @@
       "os": ["linux"]
     },
     {
-      "source": ".config/kitty/dank-theme.conf",
-      "target": ".config/kitty/dank-theme.conf",
-      "os": ["linux"]
-    },
-    {
-      "source": ".config/kitty/dank-tabs.conf",
-      "target": ".config/kitty/dank-tabs.conf",
-      "os": ["linux"]
-    },
-    {
       "source": ".config/fcitx5/profile",
       "target": ".config/fcitx5/profile",
       "os": ["linux"]
@@ -69,6 +59,11 @@
     {
       "source": ".config/fish/conf.d/opencode.fish",
       "target": ".config/fish/conf.d/opencode.fish",
+      "os": ["linux"]
+    },
+    {
+      "source": ".config/fcitx5/config",
+      "target": ".config/fcitx5/config",
       "os": ["linux"]
     }
   ]

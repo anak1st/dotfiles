@@ -244,6 +244,12 @@ recent-windows {
     }
 }
 
+// 输入法切换：Win+Space。fcitx 自己也绑了 Super+space（见 .config/fcitx5/config），
+// 两层都配：compositor 这层保证全局生效，输入法那层在按键没被 niri 截走时兜底。
+binds {
+    Mod+Space hotkey-overlay-title="Toggle Input Method" { spawn "fcitx5-remote" "-t"; }
+}
+
 // Include dms files
 include optional=true "dms/colors.kdl"
 include optional=true "dms/layout.kdl"
