@@ -4,12 +4,38 @@
     {
       "source": ".config/nvim",
       "target": ".config/nvim",
-      "os": ["macos", "linux"]
+      "os": [
+        "macos",
+        "linux"
+      ]
     },
     {
       "source": ".config/ghostty/config.ghostty",
       "target": ".config/ghostty/config.ghostty",
-      "os": ["macos"]
+      "os": [
+        "macos"
+      ]
+    },
+    {
+      "source": ".config/fish/config.fish",
+      "target": ".config/fish/config.fish",
+      "os": [
+        "linux"
+      ]
+    },
+    {
+      "source": ".config/fish/conf.d/fnm.fish",
+      "target": ".config/fish/conf.d/fnm.fish",
+      "os": [
+        "linux"
+      ]
+    },
+    {
+      "source": ".config/fish/conf.d/opencode.fish",
+      "target": ".config/fish/conf.d/opencode.fish",
+      "os": [
+        "linux"
+      ]
     }
   ]
 }
