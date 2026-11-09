@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "source": ".config/nvim",
+      "target": ".config/nvim",
+      "os": ["macos", "linux"]
+    }
+  ]
+}
