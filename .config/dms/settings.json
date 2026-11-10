@@ -23,7 +23,10 @@
       "centerWidgets": [
         "music",
         "clock",
-        "weather"
+        {
+          "id": "weather",
+          "enabled": false
+        }
       ],
       "rightWidgets": [
         "systemTray",
@@ -41,8 +44,8 @@
         "controlCenterButton"
       ],
       "spacing": 4,
-      "innerPadding": 10,
-      "barInsetPadding": -1,
+      "innerPadding": 2,
+      "barInsetPadding": 6,
       "barLengthPadding": 0,
       "barLengthMode": "full",
       "barLengthPercent": 80,
@@ -100,14 +103,33 @@
       "clickThrough": false,
       "hoverPopouts": false,
       "hoverPopoutDelay": 150,
-      "island": true,
+      "island": false,
       "dot": false,
-      "islandOuterGap": 0,
+      "islandOuterGap": 4,
       "islandReserveThickness": 40,
-      "islandCompactThickness": 36,
-      "islandSatelliteBackground": false
+      "islandCompactThickness": 38,
+      "islandSatelliteBackground": false,
+      "islandSatelliteGap": 12
     }
   ],
-  "popupTransparency": 0.8,
-  "terminalOpacity": 80
+  "popupTransparency": 0.5,
+  "terminalOpacity": 90,
+  "niriLayoutBorderSize": 3,
+  "niriLayoutGapsOverride": 6,
+  "density": "comfortable",
+  "builtInPluginSettings": {
+    "dms_qr_generator": {
+      "trigger": "qrg"
+    },
+    "dms_power": {
+      "trigger": "pw"
+    },
+    "dms_clipboard_search": {
+      "trigger": "cb"
+    },
+    "dms_settings_search": {
+      "trigger": "?"
+    }
+  },
+  "centeringMode": "geometric"
 }
