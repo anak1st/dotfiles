@@ -6,6 +6,9 @@
 收回仓库，方便 commit。只处理 dotfiles.json 里声明的路径，仓库里其他文件
 不会被误覆盖。
 
+和 install.py 一样按 app 选择：`python3 sync.py dms` 只回收 DMS 的条目，
+不带参数则回收当前平台的全部 app。
+
 所有面向用户的输出与报错都使用英文；代码注释使用中文。
 """
 
@@ -24,11 +27,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from install import (  # noqa: E402  (import 必须在 sys.path 调整之后)
     IGNORED_NAMES,
+    MANIFEST,
     REPO,
     detect_os,
     display,
     load_manifest,
+    print_apps,
     same_file,
+    select_entries,
 )
 
 
@@ -54,6 +60,12 @@ def walk_files(root: Path) -> list:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Sync dotfiles from $HOME into this repository")
+    parser.add_argument(
+        "apps",
+        nargs="*",
+        metavar="APP",
+        help="apps to handle (see --list); omit to handle all apps on this platform",
+    )
     parser.add_argument("--repo", type=Path, default=REPO, help="dotfiles repository path")
     parser.add_argument(
         "--home", type=Path, default=Path.home(), help="source root directory (default: $HOME)"
@@ -67,6 +79,12 @@ def main(argv=None) -> int:
     )
     parser.add_argument("--dry-run", action="store_true", help="print the plan without writing")
     parser.add_argument(
+        "--list",
+        dest="list_apps",
+        action="store_true",
+        help="list apps in the manifest and exit",
+    )
+    parser.add_argument(
         "--prune",
         action="store_true",
         help="delete repository files that no longer exist under $HOME",
@@ -77,13 +95,21 @@ def main(argv=None) -> int:
     home = args.home.expanduser().resolve()
     os_name = args.os_name or detect_os()
 
-    # 只有清单里声明、且适用于当前平台的条目才会参与同步。
-    entries = [e for e in load_manifest(repo) if os_name in e.os_list]
-    if not entries:
-        raise SystemExit(f"No manifest entries for platform {os_name!r}")
+    manifest = load_manifest(repo)
+    if args.list_apps:
+        print(f"apps in {repo / MANIFEST}  (os: {os_name})")
+        print_apps(manifest, os_name)
+        return 0
+
+    # 只处理点名的 app（都没点名就是全部）、且适用于当前平台的条目。
+    entries = select_entries(manifest, args.apps, os_name)
 
     # 注意方向：home 是“源”，仓库是“目标”。
-    print(f"sync <- {home}  (os: {os_name}{', dry-run' if args.dry_run else ''})")
+    scope = " ".join(args.apps) if args.apps else "all"
+    print(
+        f"sync <- {home}  (os: {os_name}, apps: {scope}"
+        f"{', dry-run' if args.dry_run else ''})"
+    )
 
     # 统计本轮结果；dry-run 时只累计不落盘，数字即“将会发生什么”。
     counts = {"add": 0, "update": 0, "same": 0, "prune": 0}

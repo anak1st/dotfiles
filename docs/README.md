@@ -60,16 +60,24 @@
 本仓库根目录对应 `~`，但**安装由清单驱动**：`dotfiles.json` 里没登记的路径，安装和同步都不会碰。
 
 ```bash
-python3 install.py             # 仓库 -> $HOME（覆盖前备份到 ~/.dotfiles-backup）
+python3 install.py             # 仓库 -> $HOME，全部 app（覆盖前备份到 ~/.dotfiles-backup）
+python3 install.py fish nvim   # 只装点名的 app
+python3 install.py --list      # 清单里有哪些 app、各几个文件、支持哪些平台
 python3 install.py --dry-run   # 只看计划
-python3 sync.py                # $HOME -> 仓库（只处理清单里的条目）
+python3 sync.py                # $HOME -> 仓库，全部 app（只处理清单里的条目）
+python3 sync.py dms            # 只回收某个 app 的改动
 python3 sync.py --prune        # 顺便删除仓库里已不存在的文件
 ```
+
+每条 entry 都带一个 `app` 字段，命令行按它选择处理哪几个软件；不传就是全部。
 
 两条硬规则：
 
 1. **只跟踪源文件**。DMS 生成的 `dms/*.kdl`、`dank-*.conf`、`firefox.css` 等一律不进仓库，否则换主题时会出现无法解释的 diff。
 2. **一个文件一条 entry**。目录条目会把目录下所有文件都算进去，容易把生成物卷进来（见 [neovim](./neovim.md) 里的隐患）。
+
+另外：**一个文件只属于一个 app**。想同时归到两类（比如「shell 相关」和「fish」）时，
+说明分组粒度选错了——`app` 是选择安装范围的单位，不是分类标签。
 
 ## 常用命令速查
 
@@ -87,7 +95,7 @@ fcitx5-remote -r                           # 重载 fcitx5 配置
 ## 一次改动的完整流程
 
 1. 改**仓库里**的文件（`~/.config/...` 是安装后的副本，直接改会丢）；
-2. 跑 `python3 install.py --dry-run` 确认计划，再正式安装；
+2. 跑 `python3 install.py <app> --dry-run` 确认计划，再正式安装；
 3. 按软件要求重载（niri 自动监听 `config.kdl`，kitty 发 `SIGUSR1`，fcitx5 `-r`，DMS `dms restart`）；
-4. 用 `python3 sync.py` 把运行时又调过的内容收回仓库；
+4. 用 `python3 sync.py <app>` 把运行时又调过的内容收回仓库；
 5. `git add -A && git commit`。

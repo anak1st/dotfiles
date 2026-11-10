@@ -1,80 +1,95 @@
 {
-  "version": 1,
+  "version": 2,
   "entries": [
     {
-      "source": ".config/fish/conf.d/fnm.fish",
-      "target": ".config/fish/conf.d/fnm.fish",
-      "os": ["macos", "linux"]
-    },
-    {
-      "source": ".config/fish/conf.d/paths.fish",
-      "target": ".config/fish/conf.d/paths.fish",
-      "os": ["macos", "linux"]
-    },
-    {
-      "source": ".config/fish/conf.d/proxy.fish",
-      "target": ".config/fish/conf.d/proxy.fish",
-      "os": ["macos", "linux"]
-    },
-    {
-      "source": ".config/fish/config.fish",
-      "target": ".config/fish/config.fish",
-      "os": ["macos", "linux"]
-    },
-    {
-      "source": ".config/nvim",
-      "target": ".config/nvim",
-      "os": ["macos", "linux"]
-    },
-    {
-      "source": ".config/ghostty/config.ghostty",
-      "target": ".config/ghostty/config.ghostty",
-      "os": ["macos"]
-    },
-    {
+      "app": "dms",
       "source": ".config/dms/settings.json",
       "target": ".config/dms/settings.json",
       "os": ["linux"]
     },
     {
+      "app": "fcitx5",
       "source": ".config/fcitx5/conf/chttrans.conf",
       "target": ".config/fcitx5/conf/chttrans.conf",
       "os": ["linux"]
     },
     {
+      "app": "fcitx5",
       "source": ".config/fcitx5/conf/notifications.conf",
       "target": ".config/fcitx5/conf/notifications.conf",
       "os": ["linux"]
     },
     {
+      "app": "fcitx5",
       "source": ".config/fcitx5/conf/pinyin.conf",
       "target": ".config/fcitx5/conf/pinyin.conf",
       "os": ["linux"]
     },
     {
+      "app": "fcitx5",
       "source": ".config/fcitx5/conf/punctuation.conf",
       "target": ".config/fcitx5/conf/punctuation.conf",
       "os": ["linux"]
     },
     {
+      "app": "fcitx5",
       "source": ".config/fcitx5/config",
       "target": ".config/fcitx5/config",
       "os": ["linux"]
     },
     {
+      "app": "fcitx5",
       "source": ".config/fcitx5/profile",
       "target": ".config/fcitx5/profile",
       "os": ["linux"]
     },
     {
+      "app": "fish",
+      "source": ".config/fish/conf.d/fnm.fish",
+      "target": ".config/fish/conf.d/fnm.fish",
+      "os": ["macos", "linux"]
+    },
+    {
+      "app": "fish",
+      "source": ".config/fish/conf.d/paths.fish",
+      "target": ".config/fish/conf.d/paths.fish",
+      "os": ["macos", "linux"]
+    },
+    {
+      "app": "fish",
+      "source": ".config/fish/conf.d/proxy.fish",
+      "target": ".config/fish/conf.d/proxy.fish",
+      "os": ["macos", "linux"]
+    },
+    {
+      "app": "fish",
+      "source": ".config/fish/config.fish",
+      "target": ".config/fish/config.fish",
+      "os": ["macos", "linux"]
+    },
+    {
+      "app": "ghostty",
+      "source": ".config/ghostty/config.ghostty",
+      "target": ".config/ghostty/config.ghostty",
+      "os": ["macos"]
+    },
+    {
+      "app": "kitty",
       "source": ".config/kitty/kitty.conf",
       "target": ".config/kitty/kitty.conf",
       "os": ["linux"]
     },
     {
+      "app": "niri",
       "source": ".config/niri/config.kdl",
       "target": ".config/niri/config.kdl",
       "os": ["linux"]
+    },
+    {
+      "app": "nvim",
+      "source": ".config/nvim",
+      "target": ".config/nvim",
+      "os": ["macos", "linux"]
     }
   ]
 }
