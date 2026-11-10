@@ -158,8 +158,9 @@ binds {
 
 | 键 | 动作 |
 |---|---|
-| `Mod+Return` / `Mod+T` | 终端 |
-| `Mod+Ctrl+Return` | 启动器（Spotlight） |
+| `Mod+T` | 终端 |
+| `Mod+Return` | 启动器（Spotlight） |
+| `Mod+D` | Dash（应用启动栏） |
 | `Mod+Space` | 输入法切换 |
 | `Mod+Q` | 关窗口 |
 | `Mod+O` / `Mod+Tab` | 总览 |
@@ -210,3 +211,12 @@ include optional=true "dms/wpblur.kdl"
 ```
 
 补之前请确认 `dms/windowrules.kdl` 内容符合预期（DMS 会重写它）。
+
+### QQ / Chromium 系「另存为」没有弹窗
+
+不是 QQ 的问题：niri 26.04 的 `org.gnome.Mutter.ServiceChannel` 只是桩（只认 `service_client_type == 1`），
+GNOME 后端的文件选择器（Nautilus）给 X11 父窗口做绑定时会被拒，libgxdp 回退路径又没判空，于是 SIGSEGV，
+门户只能报 `Delegated FileChooser call failed`，应用侧表现为「点了没反应」。
+
+当前用 gtk 后端接 FileChooser 绕过，见 [xdg-desktop-portal](./xdg-desktop-portal.md)。
+niri 上游已修（`d054395225`，2026-10-15，晚于 v26.04），等带该提交的版本进 Fedora 后按那份文档验证并撤销绕过。

@@ -54,6 +54,7 @@
 | [ghostty](./ghostty.md) | macOS 终端配置、与 Linux 侧的差异 |
 | [neovim](./neovim.md) | LazyVim 目录结构、锁文件、与 DMS 主题的关系 |
 | [字体](./fonts.md) | kitty 与 fcitx5 的字体选择与匹配 |
+| [xdg-desktop-portal](./xdg-desktop-portal.md) | 门户链条、FileChooser 为何指给 gtk 后端；两个 bug 专用文件**手动维护、不进清单** |
 
 ## 仓库约定
 
@@ -78,6 +79,9 @@ python3 sync.py --prune        # 顺便删除仓库里已不存在的文件
 
 另外：**一个文件只属于一个 app**。想同时归到两类（比如「shell 相关」和「fish」）时，
 说明分组粒度选错了——`app` 是选择安装范围的单位，不是分类标签。
+
+例外：为绕 bug 临时加的文件（`.config/xdg-desktop-portal/niri-portals.conf`、`.config/gtk-3.0/gtk.css`）
+**不进清单**，`install.py` / `sync.py` 都不管，手动复制、手动删，见 [xdg-desktop-portal](./xdg-desktop-portal.md)。
 
 ## 常用命令速查
 

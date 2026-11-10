@@ -1,0 +1,6 @@
+/* 去掉 GTK3 CSD 的透明阴影边距（Adwaita 的 decoration 规则留了 10px margin）。
+   niri 给窗口画边框；X11 客户端（如 xdg-desktop-portal-gtk 的文件对话框）把阴影画在
+   窗口内部，niri 无法从外面裁掉，边框和窗口之间就会空一圈。
+   GTK4 走 xdg_surface geometry，不受影响。
+   回滚：删掉本文件即可。 */
+decoration { margin: 0; box-shadow: none; }
