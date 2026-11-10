@@ -11,6 +11,7 @@ dotfiles/
 ├── sync.py                # 同步/回收：$HOME → 仓库
 ├── docs/                  # 每个软件一份说明（入口：docs/README.md）
 ├── .config/nvim/          # Neovim 配置（macOS / Linux 共用）
+├── .config/fish/          # fish 配置（macOS / Linux 共用）
 └── .config/ghostty/       # Ghostty 配置（仅 macOS）
 ```
 
@@ -46,6 +47,7 @@ python3 sync.py --prune        # 同时删掉仓库里本机已不存在的文�
 - 目录条目会展开成逐文件覆盖，适合整个目录都属于你的配置（比如 nvim）。
 - 想精确到单个文件，就一条列一个文件。
 - `os` 省略时默认 `["macos", "linux"]`。
+- 清单按平台分组：`["macos", "linux"]` → `["macos"]` → `["linux"]`，组内按 `source` 字母序排序，方便扫读和 diff。
 
 ## 平台差异
 

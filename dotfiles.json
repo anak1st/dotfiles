@@ -2,6 +2,26 @@
   "version": 1,
   "entries": [
     {
+      "source": ".config/fish/conf.d/fnm.fish",
+      "target": ".config/fish/conf.d/fnm.fish",
+      "os": ["macos", "linux"]
+    },
+    {
+      "source": ".config/fish/conf.d/paths.fish",
+      "target": ".config/fish/conf.d/paths.fish",
+      "os": ["macos", "linux"]
+    },
+    {
+      "source": ".config/fish/conf.d/proxy.fish",
+      "target": ".config/fish/conf.d/proxy.fish",
+      "os": ["macos", "linux"]
+    },
+    {
+      "source": ".config/fish/config.fish",
+      "target": ".config/fish/config.fish",
+      "os": ["macos", "linux"]
+    },
+    {
       "source": ".config/nvim",
       "target": ".config/nvim",
       "os": ["macos", "linux"]
@@ -12,23 +32,18 @@
       "os": ["macos"]
     },
     {
-      "source": ".config/niri/config.kdl",
-      "target": ".config/niri/config.kdl",
-      "os": ["linux"]
-    },
-    {
-      "source": ".config/kitty/kitty.conf",
-      "target": ".config/kitty/kitty.conf",
-      "os": ["linux"]
-    },
-    {
-      "source": ".config/fcitx5/profile",
-      "target": ".config/fcitx5/profile",
+      "source": ".config/dms/settings.json",
+      "target": ".config/dms/settings.json",
       "os": ["linux"]
     },
     {
       "source": ".config/fcitx5/conf/chttrans.conf",
       "target": ".config/fcitx5/conf/chttrans.conf",
+      "os": ["linux"]
+    },
+    {
+      "source": ".config/fcitx5/conf/notifications.conf",
+      "target": ".config/fcitx5/conf/notifications.conf",
       "os": ["linux"]
     },
     {
@@ -42,33 +57,23 @@
       "os": ["linux"]
     },
     {
-      "source": ".config/fcitx5/conf/notifications.conf",
-      "target": ".config/fcitx5/conf/notifications.conf",
-      "os": ["linux"]
-    },
-    {
-      "source": ".config/fish/config.fish",
-      "target": ".config/fish/config.fish",
-      "os": ["linux"]
-    },
-    {
-      "source": ".config/fish/conf.d/fnm.fish",
-      "target": ".config/fish/conf.d/fnm.fish",
-      "os": ["linux"]
-    },
-    {
-      "source": ".config/fish/conf.d/opencode.fish",
-      "target": ".config/fish/conf.d/opencode.fish",
-      "os": ["linux"]
-    },
-    {
       "source": ".config/fcitx5/config",
       "target": ".config/fcitx5/config",
       "os": ["linux"]
     },
     {
-      "source": ".config/dms/settings.json",
-      "target": ".config/dms/settings.json",
+      "source": ".config/fcitx5/profile",
+      "target": ".config/fcitx5/profile",
+      "os": ["linux"]
+    },
+    {
+      "source": ".config/kitty/kitty.conf",
+      "target": ".config/kitty/kitty.conf",
+      "os": ["linux"]
+    },
+    {
+      "source": ".config/niri/config.kdl",
+      "target": ".config/niri/config.kdl",
       "os": ["linux"]
     }
   ]
