@@ -74,19 +74,46 @@ set -gx PATH "/Users/you/.local/state/fnm_multishells/<pid>_<ts>/bin" $PATH;
 
 ### conf.d/proxy.fish
 
-本地代理（Clash/Mihomo 默认 `127.0.0.1:7890`），设 `http_proxy` / `https_proxy` / `no_proxy`。
+本地代理（Clash/Mihomo 默认 `127.0.0.1:7890`），设 `http_proxy` / `https_proxy` / `no_proxy`，同时提供一个 `proxy` 命令手动开关。
 
-设之前先探测端口（`nc -z`，没有 `nc` 就用 bash 的 `/dev/tcp`），**连不上就不设**——挂一个连不上的代理，故障表现（curl 超时、pip 卡住）比没代理更难判断。
+| 命令 | 作用 |
+|---|---|
+| `proxy on` | 强制开启，不探测（`nc` 没装时也能用） |
+| `proxy off` | 清掉 `http_proxy` / `https_proxy` / `no_proxy` |
+| `proxy` / `proxy status` | 当前状态，不探测 |
+| `proxy auto` | 重新探测一次并按结果开关 |
+| `-q` / `--quiet` | 不输出，只执行；可放在任意位置（`proxy -q auto`、`proxy auto -q` 都行） |
 
-设上之后会往 stderr 打一行提示：
+输出统一为一行 `key=value` 字段：
 
+```console
+$ proxy status
+proxy=on http_proxy=http://127.0.0.1:7890
+
+$ proxy auto
+proxy=on probe=open http_proxy=http://127.0.0.1:7890
+
+$ proxy auto          # 端口没开
+proxy=off probe=closed
+
+$ proxy -q off        # 不输出
 ```
-proxy on: http://127.0.0.1:7890
-```
 
-只在**交互 shell 且 stderr 是终端**时打印：`fish -c ...` 这类非交互调用、以及 stderr 被重定向到文件/管道的情况都不会多出这一行，所以脚本输出和 `$(...)` 捕获不会被污染。提示写 stderr 而不是 stdout，`fish -i -c 'cmd'` 的 stdout 仍然干净。
+字段含义：
 
-关闭方式：父进程已导出 `http_proxy` 时整段跳过，所以 `http_proxy= fish` 就能起一个不带代理的 shell。端口探测失败时也不会设，本机不开 Clash 就不会有残留变量。
+| 字段 | 取值 |
+|---|---|
+| `proxy` | `on` / `off`，当前 shell 的状态 |
+| `probe` | `open` / `closed` / `nc-missing`，仅 `proxy auto` 里有 |
+| `http_proxy` | 代理地址，`proxy` 为 `on` 时才有 |
+
+探测只依赖 `nc`（`nc -z -w 1`）：macOS 自带，Fedora 需要 `dnf install nmap-ncat`。**没装 `nc` 就不探测、也不自动开**（`probe=nc-missing`），避免给 curl / git / pip 挂上一个未必存在的代理——那种故障（超时、卡住）比不设更难查。
+
+启动时跑的就是 `proxy auto`：父进程已有 `http_proxy` 就跳过，不覆盖；交互终端里显示结果（写 stderr），其它情况用 `-q` 静默执行。也就是说每个新开终端会看到一行 `proxy=...`。
+
+`fish -c ...` 这类非交互调用完全静默，不会往脚本输出里塞字；提示写 stderr，`fish -i -c 'cmd'` 的 stdout 仍然干净。手动跑 `proxy ...` 时输出走 stdout，管道、重定向都照常。
+
+临时不要代理：`http_proxy= fish`（父进程已带就整段跳过，自动探测不会覆盖）。
 
 ## config.fish
 
@@ -113,4 +140,4 @@ fish -c 'type -a node'                          # 哪个 node 胜出
 ```
 
 - PATH 顺序不对：先看 `fish_user_paths` 里的顺序（`fish_add_path` 保持参数顺序），再看是不是 `fish_variables` 里还留着旧条目——universal 变量会一直存在，`set -U fish_user_paths <保留下来的条目...>` 可以清掉。
-- 代理没生效：确认 7890 端口在监听（`nc -z 127.0.0.1 7890`）、父进程没有带 `http_proxy`。
+- 代理没生效：先跑 `proxy status` 看状态和探测结果；再确认 7890 端口在监听、`nc` 有没有装、父进程是不是已经带了 `http_proxy`。
