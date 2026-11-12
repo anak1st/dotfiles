@@ -1,6 +1,6 @@
 # 桌面配置文档
 
-记录当前 Linux 桌面的组成、每层配置的归属，以及各软件的维护方式。
+记录当前桌面的组成、每层配置的归属，以及各软件的维护方式。Linux 桌面是主体；Windows 侧只有一份 PowerShell profile。
 
 ## 环境
 
@@ -11,7 +11,7 @@
 | 桌面壳 | DankMaterialShell（DMS）2.1.2 |
 | 终端 | kitty（Linux）、Ghostty（macOS） |
 | 输入法 | fcitx5 5.1.23 + Rime（雾凇拼音） |
-| Shell | fish |
+| Shell | fish（Linux / macOS）、PowerShell 7（Windows） |
 | 编辑器 | Neovim + LazyVim |
 
 ## 四层模型
@@ -55,6 +55,7 @@
 | [neovim](./neovim.md) | LazyVim 目录结构、锁文件、与 DMS 主题的关系 |
 | [字体](./fonts.md) | kitty 与 fcitx5 的字体选择与匹配 |
 | [xdg-desktop-portal](./xdg-desktop-portal.md) | 门户链条、FileChooser 为何指给 gtk 后端；两个 bug 专用文件**手动维护、不进清单** |
+| [powershell](./powershell.md) | Windows PowerShell 7 单文件 profile：加载顺序、代理、fnm、starship |
 
 ## 仓库约定
 

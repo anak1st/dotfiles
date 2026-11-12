@@ -102,14 +102,6 @@ end
 
 `starship init` 是提示符初始化，非交互 shell 里没有任何意义，所以放在这个块里、并用 `type -q` 兜底。
 
-## 不跟踪的东西
-
-| 路径 | 原因 |
-|---|---|
-| `~/.config/fish/fish_variables` | universal 变量是机器状态，`fish_add_path` 运行后会变；仓库只写 `--global`，不进这个文件 |
-| `~/.config/fish/completions/`、`functions/` | 由 bun、copilot 等工具生成或安装，不是手写源文件 |
-| `~/.config/fish/conf.d/rustup.fish` | rustup 生成的 `source ~/.cargo/env.fish`，已被 `paths.fish` 覆盖 |
-
 ## 排错
 
 ```bash

@@ -74,7 +74,7 @@ def main(argv=None) -> int:
         "--os",
         "--target",
         dest="os_name",
-        choices=["macos", "linux"],
+        choices=["macos", "linux", "windows"],
         help="force platform instead of auto-detecting it",
     )
     parser.add_argument("--dry-run", action="store_true", help="print the plan without writing")
@@ -95,7 +95,7 @@ def main(argv=None) -> int:
     home = args.home.expanduser().resolve()
     os_name = args.os_name or detect_os()
 
-    manifest = load_manifest(repo)
+    manifest = load_manifest(repo, os_name)
     if args.list_apps:
         print(f"apps in {repo / MANIFEST}  (os: {os_name})")
         print_apps(manifest, os_name)

@@ -39,9 +39,6 @@ MANIFEST = "dotfiles.json"
 #   __pycache__ sync.py 导入 install.py 时 Python 可能生成的字节码缓存。
 IGNORED_NAMES = {".DS_Store", ".git", "__pycache__"}
 
-# 清单里 os 字段缺省时视为两个平台都适用。
-DEFAULT_OS = ["macos", "linux"]
-
 # app 名字要能直接当命令行参数用，所以限制成不含空白和路径分隔符的短标识符。
 APP_NAME_RE = re.compile(r"^[A-Za-z0-9_.-]+$")
 
@@ -65,18 +62,20 @@ class Entry:
 def detect_os() -> str:
     """把 platform.system() 映射成清单里使用的平台名。
 
-    只接受 Darwin / Linux；其他系统（Windows 等）没有对应的清单约定，
-    直接报错让用户显式传 --os，避免脚本猜错平台后写坏 home。
+    只接受 Darwin / Linux / Windows；其他系统直接报错让用户显式传 --os，
+    避免脚本猜错平台后写坏 home。
     """
     system = platform.system()
     if system == "Darwin":
         return "macos"
     if system == "Linux":
         return "linux"
-    raise SystemExit(f"Cannot detect OS ({system!r}); pass --os macos|linux")
+    if system == "Windows":
+        return "windows"
+    raise SystemExit(f"Cannot detect OS ({system!r}); pass --os macos|linux|windows")
 
 
-def load_manifest(repo: Path) -> list:
+def load_manifest(repo: Path, os_name: str) -> list:
     """读取并校验 dotfiles.json，返回 Entry 列表。
 
     校验点：
@@ -84,7 +83,7 @@ def load_manifest(repo: Path) -> list:
       2. 每条 entry 必须同时有 app、source 和 target；
       3. app 必须是简短的标识符（能直接当命令行参数传）；
       4. source/target 必须是相对路径，且不能包含 ".."，否则可能逃出仓库或 home；
-      5. os 缺省时使用 DEFAULT_OS。
+      5. os 缺省时按当前平台处理，即只对当前平台生效。
     """
     path = repo / MANIFEST
     if not path.is_file():
@@ -121,7 +120,7 @@ def load_manifest(repo: Path) -> list:
                 app=app,
                 source=source,
                 target=target,
-                os_list=raw.get("os") or list(DEFAULT_OS),
+                os_list=raw.get("os") or [os_name],
             )
         )
     return entries
@@ -252,7 +251,7 @@ def main(argv=None) -> int:
         "--os",
         "--target",
         dest="os_name",
-        choices=["macos", "linux"],
+        choices=["macos", "linux", "windows"],
         help="force platform instead of auto-detecting it",
     )
     parser.add_argument("--dry-run", action="store_true", help="print the plan without writing")
@@ -279,7 +278,7 @@ def main(argv=None) -> int:
     os_name = args.os_name or detect_os()
 
     # 先解析清单：--list 不需要写任何东西，也不该因为 home 里缺文件而报错。
-    manifest = load_manifest(repo)
+    manifest = load_manifest(repo, os_name)
     if args.list_apps:
         print(f"apps in {repo / MANIFEST}  (os: {os_name})")
         print_apps(manifest, os_name)

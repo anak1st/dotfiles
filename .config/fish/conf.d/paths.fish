@@ -5,10 +5,6 @@
 #
 # 顺序即优先级，越靠前越先被找到（fish_add_path 保持参数顺序）。
 # 想换某个工具的优先级，改这个列表即可。
-#
-# 例外：fnm 的二进制目录不在这里。它的位置随安装方式变化
-# （brew 在 /opt/homebrew/bin，curl 脚本在 $XDG_DATA_HOME/fnm），
-# 而且该判断的是「可执行文件在不在」而不是「目录在不在」，见 conf.d/fnm.fish。
 
 set -l tool_dirs \
     "$HOME/.local/bin" \

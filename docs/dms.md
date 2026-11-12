@@ -212,6 +212,5 @@ dms restart                                  # 状态文件改过、界面卡死
 |---|---|
 | `~/.config/dms/settings.json`（固定栏、岛屿、主题参数） | `session.json`、`cache.json`、`plugins.lock.json`、`.firstlaunch` |
 | 想固定设置也可以写 `config.d/*.json` | 所有生成物（见上表） |
-| 想固定设置就提交 `config.d/*.json` | 所有生成物（见上表） |
 
 `settings.json` 是这里唯一的例外：它的栏布局、岛屿形态、主题参数都是手工调出来的，值得版本化；代价是每次在界面里动设置都会产生 diff。`session.json` 和缓存仍然不进仓库——它们随机器、壁纸、使用习惯变化，版本化只会制造噪音。

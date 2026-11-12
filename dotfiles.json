@@ -8,12 +8,6 @@
       "os": ["linux"]
     },
     {
-      "app": "dsh",
-      "source": ".local/bin/dsh-update",
-      "target": ".local/bin/dsh-update",
-      "os": ["macos", "linux"]
-    },
-    {
       "app": "fcitx5",
       "source": ".config/fcitx5/conf/chttrans.conf",
       "target": ".config/fcitx5/conf/chttrans.conf",
@@ -95,6 +89,18 @@
       "app": "nvim",
       "source": ".config/nvim",
       "target": ".config/nvim",
+      "os": ["macos", "linux"]
+    },
+    {
+      "app": "powershell",
+      "source": ".config/powershell/Microsoft.PowerShell_profile.ps1",
+      "target": "Documents/PowerShell/Microsoft.PowerShell_profile.ps1",
+      "os": ["windows"]
+    },
+    {
+      "app": "dsh",
+      "source": ".local/bin/dsh-update",
+      "target": ".local/bin/dsh-update",
       "os": ["macos", "linux"]
     },
     {

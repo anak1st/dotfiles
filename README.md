@@ -12,7 +12,8 @@ dotfiles/
 ├── docs/                  # 每个软件一份说明（入口：docs/README.md）
 ├── .config/nvim/          # Neovim 配置（macOS / Linux 共用）
 ├── .config/fish/          # fish 配置（macOS / Linux 共用）
-└── .config/ghostty/       # Ghostty 配置（仅 macOS）
+├── .config/ghostty/       # Ghostty 配置（仅 macOS）
+└── .config/powershell/    # PowerShell 7 profile（仅 Windows，单文件）
 ```
 
 各软件的配置归属、DMS 生成物边界、排错方式，见 [docs/README.md](./docs/README.md)。
@@ -29,7 +30,7 @@ python3 sync.py dms             # 只把 dms 的改动回收进仓库
 python3 sync.py --prune         # 同时删掉仓库里本机已不存在的文件
 ```
 
-两个脚本都支持 `--os macos|linux` 强制平台、`--home DIR` 指定目标根目录（测试用）。
+两个脚本都支持 `--os macos|linux|windows` 强制平台、`--home DIR` 指定目标根目录（测试用）。
 默认按 `platform.system()` 自动识别。
 
 - **按 app 选择**：位置参数就是 app 名，不传等于全部；`--list` 可查有哪些。
@@ -55,9 +56,8 @@ python3 sync.py --prune         # 同时删掉仓库里本机已不存在的文�
 - 一个文件只属于一个 app；新软件就起个新名字，装/同步时可以单独点名。
 - 目录条目会展开成逐文件覆盖，适合整个目录都属于你的配置（比如 nvim）。
 - 想精确到单个文件，就一条列一个文件。
-- `os` 省略时默认 `["macos", "linux"]`。
-- 清单按 app 字母序分组；组内按平台（`["macos", "linux"]` → `["macos"]` → `["linux"]`）、
-  再按 `source` 字母序排序，方便扫读和 diff。
+- `os` 省略时按当前平台处理：在哪个平台跑就只对那个平台生效；要跨平台共用同一个文件，就显式写 `"os": ["macos", "linux"]`。
+- 清单按 `source` 路径的字母序排列；`app` 只决定装/同步的范围，不参与排序。
 
 ## 平台差异
 
@@ -70,6 +70,17 @@ python3 sync.py --prune         # 同时删掉仓库里本机已不存在的文�
 { "app": "ghostty", "source": ".config/ghostty/config.linux",
   "target": ".config/ghostty/config.ghostty", "os": ["linux"] }
 ```
+
+PowerShell 是唯一一条 source 与 target 不同的条目——它只认 `~\Documents\PowerShell\`：
+
+```json
+{ "app": "powershell",
+  "source": ".config/powershell/Microsoft.PowerShell_profile.ps1",
+  "target": "Documents/PowerShell/Microsoft.PowerShell_profile.ps1",
+  "os": ["windows"] }
+```
+
+详见 [docs/powershell.md](./docs/powershell.md)。
 
 ## 测试
 
