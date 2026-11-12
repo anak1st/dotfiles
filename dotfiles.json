@@ -8,6 +8,12 @@
       "os": ["linux"]
     },
     {
+      "app": "dsh",
+      "source": ".local/bin/dsh-update",
+      "target": ".local/bin/dsh-update",
+      "os": ["macos", "linux"]
+    },
+    {
       "app": "fcitx5",
       "source": ".config/fcitx5/conf/chttrans.conf",
       "target": ".config/fcitx5/conf/chttrans.conf",
@@ -90,6 +96,12 @@
       "source": ".config/nvim",
       "target": ".config/nvim",
       "os": ["macos", "linux"]
+    },
+    {
+      "app": "sleepctl",
+      "source": ".local/bin/sleepctl",
+      "target": ".local/bin/sleepctl",
+      "os": ["linux"]
     }
   ]
 }

@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# dsh-update — 检查 npm 全局安装的 @deepseek-ai/dsh 是否有新版本，确认后更新。
+#
+# 只处理 npm -g 安装的情况：别的 Node 版本（fnm/nvm）或 pnpm/bun 装的副本
+# 不在这里更新，免得再装出第二份。
+set -euo pipefail
+
+PKG='@deepseek-ai/dsh'
+
+command -v dsh >/dev/null 2>&1 || {
+  echo "dsh is not in PATH; nothing to update." >&2
+  exit 1
+}
+command -v npm >/dev/null 2>&1 || {
+  echo "npm is not in PATH; update dsh with whatever installed it." >&2
+  exit 1
+}
+
+# 必须和当前 Node 的 npm 全局目录对得上，否则更新打不到 PATH 上的这份 dsh。
+global_root=$(npm root -g)
+if [[ ! -f "$global_root/$PKG/package.json" ]]; then
+  echo "dsh is not installed with npm -g (nothing at $global_root/$PKG); nothing to update."
+  exit 0
+fi
+
+current=$(dsh --version | head -n 1)
+latest=$(npm view "$PKG" version | tail -n 1)
+
+if [[ $current == "$latest" ]]; then
+  echo "dsh $current is up to date."
+  exit 0
+fi
+
+printf 'New version available: dsh %s -> %s\n' "$current" "$latest"
+read -r -p "Update now? [y/N] " answer || answer=''
+case $answer in
+  [yY] | [yY][eE][sS]) ;;
+  *)
+    echo "Cancelled."
+    exit 0
+    ;;
+esac
+
+npm install -g "$PKG@latest"
+echo "Updated: dsh $(dsh --version | head -n 1)"

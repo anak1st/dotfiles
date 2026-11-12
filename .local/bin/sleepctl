@@ -1,0 +1,193 @@
+#!/usr/bin/env bash
+# sleepctl — 用一个命令开关本机的睡眠/休眠。
+#
+# 原理：systemd 的四个 sleep 服务
+#   systemd-suspend.service / systemd-hibernate.service /
+#   systemd-hybrid-sleep.service / systemd-suspend-then-hibernate.service
+# 都 Requires=sleep.target。mask 掉对应 target 后：
+#   - `systemctl suspend` / `systemctl hibernate` 会失败（报 masked，预期行为）；
+#   - logind 的合盖/空闲挂起也会失败，所以机器不会再自己睡过去。
+#
+# 用法见 usage()。合盖动作在 logind.conf（HandleLidSwitch）里，不在本脚本范围。
+set -euo pipefail
+
+SLEEP=sleep.target
+SUSPEND=suspend.target
+HIBERNATE=hibernate.target
+HYBRID=hybrid-sleep.target
+STH=suspend-then-hibernate.target
+ALL=("$SLEEP" "$SUSPEND" "$HIBERNATE" "$HYBRID" "$STH")
+
+usage() {
+    cat <<'EOF'
+Usage:
+  sleepctl [status]            show current state
+  sleepctl on | off            enable / disable suspend AND hibernate
+  sleepctl toggle              flip between all-on and all-off
+  sleepctl suspend on|off      control suspend only
+  sleepctl hibernate on|off    control hibernate only
+
+Notes:
+  - Implemented by masking/unmasking systemd sleep targets; needs root (sudo).
+  - With "off", `systemctl suspend` fails with "Unit sleep.target is masked".
+    That is the intended effect, not a bug.
+  - Lid/idle policy lives in /etc/systemd/logind.conf.d/, not in this script.
+EOF
+}
+
+unit_state() {
+    systemctl is-enabled "$1" 2>/dev/null || true
+}
+
+is_masked() {
+    [ "$(unit_state "$1")" = masked ]
+}
+
+run_systemctl() {
+    if [ "$(id -u)" -eq 0 ]; then
+        systemctl "$@"
+    else
+        sudo systemctl "$@"
+    fi
+}
+
+suspend_enabled() {
+    ! is_masked "$SLEEP" && ! is_masked "$SUSPEND"
+}
+
+hibernate_enabled() {
+    ! is_masked "$SLEEP" && ! is_masked "$HIBERNATE"
+}
+
+# apply S H：S/H 取 1/0，表示“睡眠可用 / 休眠可用”。所有 target 的
+# mask/unmask 都从这里推导，避免每个子命令各写一套。
+apply() {
+    local s=$1 h=$2 u want
+    local -a to_mask=() to_unmask=()
+
+    for u in "${ALL[@]}"; do
+        case "$u" in
+            "$SLEEP")
+                if [ "$s" = 1 ] || [ "$h" = 1 ]; then want=0; else want=1; fi
+                ;;
+            "$SUSPEND")
+                if [ "$s" = 1 ]; then want=0; else want=1; fi
+                ;;
+            "$HIBERNATE" | "$HYBRID")
+                if [ "$h" = 1 ]; then want=0; else want=1; fi
+                ;;
+            "$STH")
+                if [ "$s" = 1 ] && [ "$h" = 1 ]; then want=0; else want=1; fi
+                ;;
+            *)
+                want=1
+                ;;
+        esac
+
+        if [ "$want" = 1 ]; then
+            if ! is_masked "$u"; then to_mask+=("$u"); fi
+        else
+            if is_masked "$u"; then to_unmask+=("$u"); fi
+        fi
+    done
+
+    if [ ${#to_unmask[@]} -gt 0 ]; then
+        run_systemctl unmask "${to_unmask[@]}" >/dev/null
+    fi
+    if [ ${#to_mask[@]} -gt 0 ]; then
+        run_systemctl mask "${to_mask[@]}" >/dev/null
+    fi
+}
+
+status() {
+    local u
+    printf '%-34s %s\n' "unit" "state"
+    for u in "${ALL[@]}"; do
+        printf '%-34s %s\n' "$u" "$(unit_state "$u")"
+    done
+    printf '\n'
+
+    if suspend_enabled; then
+        printf 'suspend:   %s\n' "enabled"
+    else
+        printf 'suspend:   %s\n' "disabled"
+    fi
+    if hibernate_enabled; then
+        printf 'hibernate: %s\n' "enabled"
+    else
+        printf 'hibernate: %s\n' "disabled"
+    fi
+
+    if suspend_enabled && hibernate_enabled; then
+        printf 'mode:      %s\n' "laptop (suspend + hibernate allowed)"
+    elif suspend_enabled || hibernate_enabled; then
+        printf 'mode:      %s\n' "custom"
+    else
+        printf 'mode:      %s\n' "server (no sleep)"
+    fi
+}
+
+main() {
+    case "${1:-status}" in
+        status)
+            status
+            ;;
+        on)
+            apply 1 1
+            status
+            ;;
+        off)
+            apply 0 0
+            status
+            ;;
+        toggle)
+            if suspend_enabled || hibernate_enabled; then
+                apply 0 0
+            else
+                apply 1 1
+            fi
+            status
+            ;;
+        suspend)
+            case "${2:-}" in
+                on)
+                    apply 1 "$(hibernate_enabled && echo 1 || echo 0)"
+                    status
+                    ;;
+                off)
+                    apply 0 "$(hibernate_enabled && echo 1 || echo 0)"
+                    status
+                    ;;
+                *)
+                    usage
+                    exit 2
+                    ;;
+            esac
+            ;;
+        hibernate)
+            case "${2:-}" in
+                on)
+                    apply "$(suspend_enabled && echo 1 || echo 0)" 1
+                    status
+                    ;;
+                off)
+                    apply "$(suspend_enabled && echo 1 || echo 0)" 0
+                    status
+                    ;;
+                *)
+                    usage
+                    exit 2
+                    ;;
+            esac
+            ;;
+        help | -h | --help)
+            usage
+            ;;
+        *)
+            usage
+            exit 2
+            ;;
+    esac
+}
+
+main "$@"
