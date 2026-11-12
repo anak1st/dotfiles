@@ -131,5 +131,12 @@
       "trigger": "?"
     }
   },
-  "centeringMode": "geometric"
+  "centeringMode": "geometric",
+  "mouseScrollFactor": 1,
+  "touchpadScrollFactor": 0.5,
+  "batteryChargeLimit": 100,
+  "lockScreenPowerOffMonitorsOnLock": false,
+  "lockBeforeSuspend": true,
+  "acPostLockMonitorTimeout": 60,
+  "batteryPostLockMonitorTimeout": 60
 }
