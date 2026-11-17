@@ -1,97 +1,85 @@
-# 本地代理（Clash / Mihomo 默认 7890）
+# 本地代理（Clash / Mihomo 默认 127.0.0.1:7890）
 #
-#   proxy on        开启（不探测，nc 没装时也能用）
-#   proxy off       关闭
-#   proxy status    看当前状态（默认，直接敲 proxy 也是它）
-#   proxy auto      探测后按结果开关
-#   -q / --quiet    不输出，只执行（可以放在任意位置）
+#   proxy on        设 http_proxy / https_proxy / no_proxy，不探测
+#   proxy off       清掉这三个变量
+#   proxy status    只读当前状态，不探测
+#   proxy auto      nc 探测 127.0.0.1:7890，通就开、不通就关
+#   -q / --quiet    不输出，只执行；写在模式之后
 #
-# 启动时自动探测一次（内部就是 `proxy auto`）；父进程已有 http_proxy 就不动。
-# 探测依赖 nc（macOS 自带；Fedora 需要 `dnf install nmap-ncat`），没装就不探测、
-# 也不自动开，避免给 curl / git 挂上一个未必存在的代理。
+# 模式必填，且必须是第一个参数；否则打 usage 并返回 1。
 #
-# 输出一律一行 k=v：
+# 输出一行 k=v：
 #   proxy=on http_proxy=http://127.0.0.1:7890
-#   proxy=off probe=closed / probe=nc-missing
+#   proxy=off
+#   proxy=on probe=open http_proxy=http://127.0.0.1:7890
+#   proxy=off probe=closed          auto：端口没开
+#   proxy=off probe=nc-missing      auto：没装 nc
+#
+# 探测只用 nc -z -w 1。没装 nc 就既不探测也不自动开：挂一个未必存在的代理，
+# 故障表现（curl 超时、pip 卡住）比不设更难查。
+#
+# 启动时自动跑一次 proxy auto：父进程已有 http_proxy 就跳过；交互终端里把结果
+# 写 stderr，其它情况用 -q 静默执行。
 
-set -g __proxy_host 127.0.0.1
-set -g __proxy_port 7890
-set -g __proxy_url "http://$__proxy_host:$__proxy_port"
+function proxy --description '本地代理：proxy <on|off|auto|status> [-q]'
+    set -l url http://127.0.0.1:7890
 
-function __proxy_on --description 'proxy: 开启'
-    set -gx http_proxy $__proxy_url
-    set -gx https_proxy $__proxy_url
-    # 本机回环不走代理，避免本地服务被绕一圈
-    set -gx no_proxy "localhost,127.0.0.1,::1"
-end
-
-function __proxy_off --description 'proxy: 关闭'
-    set -e http_proxy
-    set -e https_proxy
-    set -e no_proxy
-end
-
-function __proxy_probe --description 'proxy: 检测端口，监听返回 0，nc 不可用返回 2'
-    type -q nc; or return 2
-    nc -z -w 1 $__proxy_host $__proxy_port >/dev/null 2>&1
-end
-
-function proxy --description '总入口：proxy [on|off|auto|status] [-q]'
-    # 参数解析：子命令一个，-q/--quiet 可放任意位置
-    set -l cmd
+    # 模式是第一个参数；后面任何位置出现 -q 都算安静模式
+    set -l cmd $argv[1]
     set -l quiet 0
-    for arg in $argv
-        switch $arg
-            case -q --quiet
-                set quiet 1
-            case '*'
-                if set -q cmd[1]
-                    echo "usage: proxy [on|off|auto|status] [-q]" >&2
-                    return 1
-                end
-                set cmd $arg
+    if contains -- -q $argv; or contains -- --quiet $argv
+        set quiet 1
+    end
+
+    # auto 先探测，结果折成 on / off，和手动开关走同一段
+    set -l probe
+    if test "$cmd" = auto
+        if not type -q nc
+            set probe nc-missing
+            set cmd off
+        else if nc -z -w 1 127.0.0.1 7890 >/dev/null 2>&1
+            set probe open
+            set cmd on
+        else
+            set probe closed
+            set cmd off
         end
     end
 
-    set -l out
-    switch "$cmd"
+    switch $cmd
         case on
-            __proxy_on
-            set out "proxy=on http_proxy=$__proxy_url"
+            set -gx http_proxy $url
+            set -gx https_proxy $url
+            set -gx no_proxy localhost,127.0.0.1,::1
         case off
-            __proxy_off
-            set out "proxy=off"
-        case auto
-            __proxy_probe
-            switch $status
-                case 0
-                    __proxy_on
-                    set out "proxy=on probe=open http_proxy=$__proxy_url"
-                case 2
-                    __proxy_off
-                    set out "proxy=off probe=nc-missing"
-                case '*'
-                    __proxy_off
-                    set out "proxy=off probe=closed"
-            end
-        case status ''
+            set -e http_proxy
+            set -e https_proxy
+            set -e no_proxy
+        case status
             if set -q http_proxy
-                set out "proxy=on http_proxy=$http_proxy"
+                set cmd on
             else
-                set out "proxy=off"
+                set cmd off
             end
         case '*'
-            echo "usage: proxy [on|off|auto|status] [-q]" >&2
+            echo "usage: proxy <on|off|auto|status> [-q]" >&2
             return 1
     end
 
-    if test -n "$out"; and test $quiet -eq 0
+    # 拼一行 k=v：proxy=off / proxy=on http_proxy=... / 带 probe 的只有 auto
+    set -l out "proxy=$cmd"
+    if test -n "$probe"
+        set out "$out probe=$probe"
+    end
+    if test "$cmd" = on
+        set out "$out http_proxy=$http_proxy"
+    end
+
+    if test $quiet -eq 0
         echo $out
     end
 end
 
-# 启动时跑一次 `proxy auto`：交互终端里显示结果（写 stderr），
-# 其它情况用 -q 静默执行；父进程已经给了 http_proxy 就尊重它，不覆盖。
 if not set -q http_proxy
     if status is-interactive; and isatty stderr
         proxy auto >&2

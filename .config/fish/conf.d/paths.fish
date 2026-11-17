@@ -1,31 +1,27 @@
 # 工具目录 -> PATH
 #
-# 原则：先探测、再添加。目录不存在就整个跳过，所以同一份配置可以同时用在
-# macOS 和 Fedora 上：没装的工具不会报错，也不会把不存在的路径塞进 PATH。
+# 先探测、再添加：目录不存在就整段跳过，所以同一份配置可以同时用在 macOS
+# 和 Fedora 上，没装的工具不会报错，也不会把不存在的路径塞进 PATH。
 #
-# 顺序即优先级，越靠前越先被找到（fish_add_path 保持参数顺序）。
-# 想换某个工具的优先级，改这个列表即可。
+# 越靠下写的行优先级越高（每行都插到 PATH 最前面），~/.local/bin 写在最下面。
+# 新增工具就是复制三行、改个路径。
 
-set -l tool_dirs \
-    "$HOME/.local/bin" \
-    "$HOME/.cargo/bin" \
-    "$HOME/.opencode/bin" \
-    "$HOME/.mimocode/bin" \
-    "$HOME/.bun/bin"
-
-set -l found
-for dir in $tool_dirs
-    if test -d "$dir"
-        set -a found "$dir"
-    end
+if test -d "$HOME/.bun/bin"
+    set -gx PATH "$HOME/.bun/bin" $PATH
 end
 
-# fish_add_path 自带去重：本文件被重复 source 也不会让 PATH 变长。
-if set -q found[1]
-    fish_add_path --global --prepend $found
+if test -d "$HOME/.mimocode/bin"
+    set -gx PATH "$HOME/.mimocode/bin" $PATH
 end
 
-# bun 靠 BUN_INSTALL 定位自己的安装根目录
-if test -d "$HOME/.bun"
-    set -gx BUN_INSTALL "$HOME/.bun"
+if test -d "$HOME/.opencode/bin"
+    set -gx PATH "$HOME/.opencode/bin" $PATH
+end
+
+if test -d "$HOME/.cargo/bin"
+    set -gx PATH "$HOME/.cargo/bin" $PATH
+end
+
+if test -d "$HOME/.local/bin"
+    set -gx PATH "$HOME/.local/bin" $PATH
 end
