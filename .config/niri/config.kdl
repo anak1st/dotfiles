@@ -1,36 +1,31 @@
-// This config is in the KDL format: https://kdl.dev
-// "/-" comments out the following node.
-// Check the wiki for a full description of the configuration:
+// niri 配置（KDL 格式：https://kdl.dev）
+// 节点前加 "/-" 表示注释掉。完整选项见 wiki：
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Introduction
 config-notification {
     disable-failed
 }
 
+// 关掉屏幕四角的热区（DMS 自己处理边缘手势）
 gestures {
     hot-corners {
         off
     }
 }
 
-// Input device configuration.
-// Find the full list of options on the wiki:
-// https://github.com/YaLTeR/niri/wiki/Configuration:-Input
+// 输入设备。完整选项见 wiki：Configuration:-Input
 input {
     keyboard {
         xkb {
-            // You can set rules, model, layout, variant and options.
-            // For more information, see xkeyboard-config(7).
-
-            // For example:
+            // 可写 rules / model / layout / variant / options，取值见 xkeyboard-config(7)。
+            // 例如：
             // layout "us,ru"
             // options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
 
-            // If this section is empty, niri will fetch xkb settings
-            // from org.freedesktop.locale1. You can control these using
-            // localectl set-x11-keymap.
+            // 留空时由 niri 从 org.freedesktop.locale1 读取，
+            // 即 localectl set-x11-keymap 写下的值。
         }
 
-        // Enable numlock on startup, omitting this setting disables it.
+        // 启动时打开数字键盘锁；删掉这行则关闭。
         numlock
     }
 
@@ -45,71 +40,55 @@ input {
         // middle-emulation
     }
 
-    // Uncomment this to make the mouse warp to the center of newly focused windows.
+    // 取消注释：新获得焦点的窗口把鼠标吸到中心。
     // warp-mouse-to-focus
 
-    // Focus windows and outputs automatically when moving the mouse into them.
-    // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen.
+    // 鼠标移入即聚焦。max-scroll-amount="0%" 只对已完全在屏内的窗口生效。
     // focus-follows-mouse max-scroll-amount="0%"
 }
 
-// You can configure outputs by their name, which you can find
-// by running `niri msg outputs` while inside a niri instance.
-// The built-in laptop monitor is usually called "eDP-1".
-// Find more information on the wiki:
-// https://github.com/YaLTeR/niri/wiki/Configuration:-Outputs
-// Remember to uncomment the node by removing "/-"!
+// 输出按名字配置，名字用 `niri msg outputs` 查，内屏通常叫 "eDP-1"。
+// 完整选项见 wiki：Configuration:-Outputs。解除注释时别忘了去掉 "/-"。
 /-output "eDP-2" {
     mode "2560x1600@239.998993"
     position x=2560 y=0
     variable-refresh-rate
 }
-// Settings that influence how windows are positioned and sized.
-// Find more information on the wiki:
-// https://github.com/YaLTeR/niri/wiki/Configuration:-Layout
+// 窗口如何摆放、定尺寸。完整选项见 wiki：Configuration:-Layout
 layout {
-    // Set gaps around windows in logical pixels.
+    // 布局底色，透明表示露出 DMS 的壁纸层。
     background-color "transparent"
-    // When to center a column when changing focus, options are:
-    // - "never", default behavior, focusing an off-screen column will keep at the left
-    //   or right edge of the screen.
-    // - "always", the focused column will always be centered.
-    // - "on-overflow", focusing a column will center it if it doesn't fit
-    //   together with the previously focused column.
+    // 切换焦点时列何时居中：
+    // - "never"（默认）：聚焦屏外的列时贴到屏幕左右边缘；
+    // - "always"：聚焦的列总是居中；
+    // - "on-overflow"：和上一个聚焦列并排放不下时才居中。
     center-focused-column "never"
-    // You can customize the widths that "switch-preset-column-width" (Mod+R) toggles between.
+    // "switch-preset-column-width"（Mod+R）在哪些宽度间切换。
     preset-column-widths {
-        // Proportion sets the width as a fraction of the output width, taking gaps into account.
-        // For example, you can perfectly fit four windows sized "proportion 0.25" on an output.
-        // The default preset widths are 1/3, 1/2 and 2/3 of the output.
+        // proportion 按输出宽度的比例算（已计入间隙），0.25 正好并排四个。
+        // 默认预设是 1/3、1/2、2/3。
         proportion 0.33333
         proportion 0.5
         proportion 0.66667
-        // Fixed sets the width in logical pixels exactly.
+        // fixed 是写死的逻辑像素宽度。
         // fixed 1920
     }
-    // You can also customize the heights that "switch-preset-window-height" (Mod+Shift+R) toggles between.
+    // "switch-preset-window-height"（Mod+Shift+R）的高度预设同理。
     // preset-window-heights { }
-    // You can change the default width of the new windows.
+    // 新窗口的默认宽度。
     default-column-width { proportion 0.5; }
-    // If you leave the brackets empty, the windows themselves will decide their initial width.
+    // 括号留空则由窗口自己决定初始宽度。
     // default-column-width {}
-    // By default focus ring and border are rendered as a solid background rectangle
-    // behind windows. That is, they will show up through semitransparent windows.
-    // This is because windows using client-side decorations can have an arbitrary shape.
-    //
-    // If you don't like that, you should uncomment `prefer-no-csd` below.
-    // Niri will draw focus ring and border *around* windows that agree to omit their
-    // client-side decorations.
-    //
-    // Alternatively, you can override it with a window rule called
-    // `draw-border-with-background`.
+    // 默认焦点环和边框画在窗口后面的一整块矩形上，半透明窗口里会透出来，
+    // 因为客户端自绘装饰的窗口可以是任意形状。
+    // 想画在窗口外围，取消下面 prefer-no-csd 的注释；
+    // 也可以用窗口规则 draw-border-with-background 单独覆盖。
     border {
         off
         width 4
-        active-color   "#707070"      // Neutral gray
-        inactive-color "#d0d0d0"      // Light gray
-        urgent-color   "#cc4444"      // Softer red
+        active-color   "#707070"      // 中性灰
+        inactive-color "#d0d0d0"      // 浅灰
+        urgent-color   "#cc4444"      // 偏柔和的红
     }
     shadow {
         softness 30
@@ -120,20 +99,19 @@ layout {
     struts {
     }
 }
+// DMS 的 quickshell 图层放进背景层，不盖住窗口
 layer-rule {
     match namespace="^quickshell$"
     place-within-backdrop true
 }
+// 概览里的工作区不加阴影
 overview {
     workspace-shadow {
         off
     }
 }
-// Add lines like this to spawn processes at startup.
-// Note that running niri as a session supports xdg-desktop-autostart,
-// which may be more convenient to use.
-// See the binds section below for more spawn examples.
-// This line starts waybar, a commonly used bar for Wayland compositors.
+// 会话环境：让 GTK / Qt / SDL 程序都走 fcitx5，并声明桌面类型。
+// niri 作为会话运行时也支持 xdg-desktop-autostart，开机自启两边都行。
 environment {
   XDG_CURRENT_DESKTOP "niri"
   XMODIFIERS "@im=fcitx"
@@ -141,12 +119,17 @@ environment {
   QT_IM_MODULE "fcitx"
   SDL_IM_MODULE "fcitx"
 }
+// 输入法守护进程
 spawn-at-startup "fcitx5" "-d"
+// 启动时不弹快捷键提示
 hotkey-overlay {
     skip-at-startup
 }
+// 让窗口不用客户端装饰，边框由 niri 画（见上面 border 的说明）
 prefer-no-csd
+// 截图保存路径（niri 自带截图，Print 键）
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+// 动画手感：spring 给弹簧参数，duration-ms + curve 给固定时长
 animations {
     workspace-switch {
         spring damping-ratio=0.80 stiffness=523 epsilon=0.0001
@@ -179,24 +162,22 @@ animations {
         spring damping-ratio=0.85 stiffness=800 epsilon=0.0001
     }
 }
-// Window rules let you adjust behavior for individual windows.
-// Find more information on the wiki:
-// https://github.com/YaLTeR/niri/wiki/Configuration:-Window-Rules
-// Work around WezTerm's initial configure bug
-// by setting an empty default-column-width.
+// 窗口规则：按 app-id / title 单独调行为。完整选项见 wiki：Configuration:-Window-Rules
+
+// WezTerm 首次 configure 有 bug，拿空的 default-column-width 绕开；
+// 正则写严是怕误伤，只匹配 wezterm 的话 app-id="wezterm" 就够。
 window-rule {
-    // This regular expression is intentionally made as specific as possible,
-    // since this is the default config, and we want no false positives.
-    // You can get away with just app-id="wezterm" if you want.
     match app-id=r#"^org\.wezfurlong\.wezterm$"#
     default-column-width {}
 }
+// GNOME 系（文件选择器、设置等）用客户端装饰：给圆角并裁掉窗框
 window-rule {
     match app-id=r#"^org\.gnome\."#
     draw-border-with-background false
     geometry-corner-radius 12
     clip-to-geometry true
 }
+// 设置、网络连接编辑器等对话框：半屏宽，不浮起
 window-rule {
     match app-id=r#"^gnome-control-center$"#
     match app-id=r#"^pavucontrol$"#
@@ -204,6 +185,7 @@ window-rule {
     default-column-width { proportion 0.5; }
     open-floating false
 }
+// 计算器、蓝牙管理器、portal 对话框：浮起
 window-rule {
     match app-id=r#"^org\.gnome\.Calculator$"#
     match app-id=r#"^gnome-calculator$"#
@@ -212,11 +194,13 @@ window-rule {
     match app-id=r#"^xdg-desktop-portal$"#
     open-floating true
 }
+// Steam 的通知 toast：贴右下角，不抢焦点
 window-rule {
     match app-id=r#"^steam$"# title=r#"^notificationtoasts_\d+_desktop$"#
     default-floating-position x=10 y=10 relative-to="bottom-right"
     open-focused false
 }
+// 终端与浏览器自己画边框，不要背景框，免得半透明时出现双层框
 window-rule {
     match app-id=r#"^org\.wezfurlong\.wezterm$"#
     match app-id="Alacritty"
@@ -225,16 +209,19 @@ window-rule {
     match app-id="kitty"
     draw-border-with-background false
 }
+// 画中画、Zoom 会议窗口：浮起
 window-rule {
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"
     match app-id="zoom"
     open-floating true
 }
+// 旧 Electron 客户端的 xdg-activation serial 不合法，放行它们才能被跳转激活
 debug {
     honor-xdg-activation-with-invalid-serial
 }
 
-// Override to disable super+tab
+// 最近窗口列表：Alt+Tab / Alt+`，把 Mod+Tab 空出来；
+// 后两个按 app-id 过滤，只在同一应用的不同窗口间切换。
 recent-windows {
     binds {
         Alt+Tab         { next-window scope="output"; }
@@ -250,7 +237,7 @@ binds {
     Mod+Space hotkey-overlay-title="Toggle Input Method" { spawn "fcitx5-remote" "-t"; }
 }
 
-// Include dms files
+// DMS 生成的片段（颜色、布局、Alt-Tab、按键、输出、光标、输入），会随界面设置重写
 include optional=true "dms/colors.kdl"
 include optional=true "dms/layout.kdl"
 include optional=true "dms/alttab.kdl"
