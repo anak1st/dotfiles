@@ -21,7 +21,7 @@
 # 启动时自动跑一次 proxy auto：父进程已有 http_proxy 就跳过；交互终端里把结果
 # 写 stderr，其它情况用 -q 静默执行。
 
-function proxy --description '本地代理：proxy <on|off|auto|status> [-q]'
+function proxy --description 'Local proxy: proxy <on|off|auto|status> [-q]'
     set -l url http://127.0.0.1:7890
 
     # 模式是第一个参数；后面任何位置出现 -q 都算安静模式
